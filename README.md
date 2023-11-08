@@ -40,9 +40,9 @@ https://Software-Engineer
 **משרדים**
 
  
- - GET [https://Software-Engineer/office]
+ - GET https://Software-Engineer/office
 
- - POST [https://Software-Engineer/office](https://Software-
+ - POST https://Software-Engineer/office
 
  - PUT [https://Software-Engineer/office](https://Software-Engineer/office)
  - DELETE  https://Software-Engineer/office
