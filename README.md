@@ -1,20 +1,21 @@
+<![endif]-->
 
 ## אתר מהנדס תוכנה
 
-[https://Software-Engineer](https://Software-Engineer)
+https://Software-Engineer
 
 ## `משרדים`
 **לצפות בהישגי המהנדס**
 
-GET  [https://Software-Engineer/achievements](https://Software-Engineer/achievements)
+ - GET  https://Software-Engineer/achievements
 
 **לצפות בעבודות/פרויקטים של המהנדס**
 
-GET  [https://Software-Engineer/projects](https://Software-Engineer/projects)
+ - GET  https://Software-Engineer/projects
 
 **לשלוח הצעת עבודה**
 
-PUT  [https://Software-Engineer/office/{id}](https://Software-Engineer/office/%7bid%7d)
+ - PUT  https://Software-Engineer/office/{id}
 
 ## **תחזוקת המהנדס**
 
