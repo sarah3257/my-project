@@ -9,44 +9,59 @@ namespace Software_Engineer.Controllers
     [ApiController]
     public class AchievementsController : ControllerBase
     {
-        private static List<Achievements>_Achievements=new List<Achievements>();
-        private static int _count=0;
+        private readonly DataContext _context;
+        
+       public AchievementsController(DataContext context)
+        {
+            _context = context;
+        }
+
         // GET: api/<AchievementsController>
         [HttpGet]
         public IEnumerable<Achievements> Get()
         {
-            return _Achievements;
+            return _context.Achievements;
         }
 
         // GET api/<AchievementsController>/5
         [HttpGet("{id}")]
-        public Achievements Get(int id)
+        public ActionResult <Achievements> Get(int id)
         {
-            return _Achievements.Find(a => a._idAchievement == id); ;
+            var ach = _context.Achievements.Find(a => a._idAchievement == id);
+            if (ach == null)
+                return NotFound();
+
+            return ach;
         } 
 
         // POST api/<AchievementsController>
         [HttpPost]
         public void Post([FromBody] Achievements achievement)
         {
-            _Achievements.Add(new Achievements { _idAchievement=_count++,_nameAchievement=achievement._nameAchievement});
+            _context.Achievements.Add(new Achievements { _idAchievement=_context.countA++,_nameAchievement=achievement._nameAchievement});
             
         }
 
         // PUT api/<AchievementsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Achievements achievement)
+        public ActionResult Put(int id, [FromBody] Achievements achievement)
         {
-            var ach=_Achievements.Find(achievement=>achievement._idAchievement==id);
+            var ach= _context.Achievements.Find(achievement=>achievement._idAchievement==id);
+            if (ach == null)
+                return NotFound();
             ach._nameAchievement = achievement._nameAchievement;
+            return Ok();
         }
 
         // DELETE api/<AchievementsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
-            var ach=_Achievements.Find(a=>a._idAchievement==id);
-            _Achievements.Remove(ach);
+            var ach= _context.Achievements.Find(a=>a._idAchievement==id);
+            if (ach == null)
+                return NotFound();
+            _context.Achievements.Remove(ach);
+            return Ok();
         }
     }
 }

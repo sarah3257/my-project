@@ -9,20 +9,27 @@ namespace Software_Engineer.Controllers
     [ApiController]
     public class OfficeController : ControllerBase
     {
-        private static List<Office>_Office=new List<Office>();
-        private static int count=0;
+        private readonly DataContext _context;
+        public OfficeController(DataContext context)
+        {
+            _context = context;
+        }
+
+
         // GET: api/<OfficeController>
         [HttpGet]
         public IEnumerable<Office> Get()
         {
-            return _Office;
+            return _context.Office;
         }
 
         // GET api/<OfficeController>/5
         [HttpGet("{id}")]
-        public Office Get(int id)
+        public ActionResult<Office> Get(int id)
         {
-            var office2= _Office.Find(office2 => office2._idOffice == id);
+            var office2= _context.Office.Find(office2 => office2._idOffice == id);
+            if(office2 == null)
+                return NotFound();
             return office2;
         }
 
@@ -30,24 +37,31 @@ namespace Software_Engineer.Controllers
         [HttpPost]
         public void Post([FromBody] Office office)
         {
-            _Office.Add(new Office {_idOffice=count++,_nameOffice=office._nameOffice });
+            _context.Office.Add(new Office {_idOffice=_context.countO++,_nameOffice=office._nameOffice });
         }
 
         // PUT api/<OfficeController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Office office1)
+        public ActionResult Put(int id, [FromBody] Office office1)
         {
-            var office2=_Office.Find(office1=>office1._idOffice==id);
+            var office2= _context.Office.Find(x=>x._idOffice==id);
+            if (office2 == null)
+                return NotFound();
             office2._nameOffice=office1._nameOffice;
+            return Ok();
 
         }
 
         // DELETE api/<OfficeController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
-            var office2=_Office.Find(office2=>office2._idOffice==id);
-            _Office.Remove(office2);
+            var office2= _context.Office.Find(office2=>office2._idOffice==id);
+            if (office2 == null)
+                return NotFound();
+            _context.Office.Remove(office2);
+            return Ok();
+
         }
     }
 }

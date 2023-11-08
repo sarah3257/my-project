@@ -9,47 +9,60 @@ namespace Software_Engineer.Controllers
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-        private static List<Projects> _Projects = new List<Projects> { new Projects { IdProject = 1, NameProject = "police", CreationDate = new DateTime(2021, 08,01)},
-            new Projects{IdProject = 2, NameProject = "למטייל", CreationDate = new DateTime(2022, 11, 01)} };
-        private static int _count = 2;
+        private readonly DataContext _Context;
+        public ProjectsController(DataContext context)
+        {
+            _Context = context;
+        }
+
+
         // GET: api/<ProjectsController>
         [HttpGet]
         public IEnumerable<Projects> Get()
         {
-            return _Projects;
+            return _Context.Projects;
         }
 
         // GET api/<ProjectsController>/5
         [HttpGet("{id}")]
-        public Projects Get(int id)
+        public ActionResult<Projects> Get(int id)
         {
-            return _Projects.Find(project => project.IdProject == id);
+          var project= _Context.Projects.Find(project => project.IdProject == id);
+            if (project == null)
+                return NotFound();
+            return project;
         }
 
         // POST api/<ProjectsController>
         [HttpPost]
         public void Post([FromBody] Projects project)
         {
-            _Projects.Add(new Projects { IdProject =_count++, NameProject =project.NameProject, CreationDate=project.CreationDate});
+            _Context.Projects.Add(new Projects { IdProject =_Context.countP++, NameProject =project.NameProject, CreationDate=project.CreationDate});
         }
 
         // PUT api/<ProjectsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Projects project)
+        public ActionResult Put(int id, [FromBody] Projects project)
         {
-            var project2= _Projects.Find(project=>project.IdProject == id);
-            
+            var project2= _Context.Projects.Find(project=>project.IdProject == id);
+            if (project2 == null)
+                return NotFound();
             project2.NameProject=project.NameProject;
             project2.CreationDate=project.CreationDate;
-
+            return Ok();
         }
 
         // DELETE api/<ProjectsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
-            var project2=_Projects.Find(project=>project.IdProject == id);
-            _Projects.Remove(project2);
+
+            var project2= _Context.Projects.Find(project=>project.IdProject == id);
+            if (project2 == null)
+                return NotFound();
+            _Context.Projects.Remove(project2);
+            return Ok();
+
         }
     }
 }
