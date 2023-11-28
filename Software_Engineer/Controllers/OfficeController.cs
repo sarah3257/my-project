@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Software_Engineer.Entities;
+//using Software_Engineer.Core.Services;
+using Software_Engineer.Core.Entities;
+using Software_Engineer.Core.Services;
+using Software_Engineer.Service;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,10 +12,10 @@ namespace Software_Engineer.Controllers
     [ApiController]
     public class OfficeController : ControllerBase
     {
-        private readonly DataContext _context;
-        public OfficeController(DataContext context)
+        private readonly IOfficeService _officeService;
+        public OfficeController(IOfficeService officeService)
         {
-            _context = context;
+            _officeService = officeService;
         }
 
 
@@ -20,47 +23,35 @@ namespace Software_Engineer.Controllers
         [HttpGet]
         public IEnumerable<Office> Get()
         {
-            return _context.Office;
+            return _officeService.Get();    
         }
 
         // GET api/<OfficeController>/5
         [HttpGet("{id}")]
         public ActionResult<Office> Get(int id)
-        {
-            var office2= _context.Office.Find(office2 => office2._idOffice == id);
-            if(office2 == null)
-                return NotFound();
-            return office2;
+        {        
+            return _officeService.Get(id);
         }
 
         // POST api/<OfficeController>
         [HttpPost]
         public void Post([FromBody] Office office)
         {
-            _context.Office.Add(new Office {_idOffice=_context.countO++,_nameOffice=office._nameOffice });
+            _officeService.Post(office);
         }
 
         // PUT api/<OfficeController>/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] Office office1)
+        public void Put(int id, [FromBody] Office office1)
         {
-            var office2= _context.Office.Find(x=>x._idOffice==id);
-            if (office2 == null)
-                return NotFound();
-            office2._nameOffice=office1._nameOffice;
-            return Ok();
-
+            _officeService.Put(id, office1);    
         }
 
         // DELETE api/<OfficeController>/5
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var office2= _context.Office.Find(office2=>office2._idOffice==id);
-            if (office2 == null)
-                return NotFound();
-            _context.Office.Remove(office2);
-            return Ok();
+           return _officeService.Delete(id);    
 
         }
     }

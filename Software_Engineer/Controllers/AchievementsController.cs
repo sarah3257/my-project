@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Software_Engineer.Entities;
+using Software_Engineer.Core.Entities;
+using Software_Engineer.Core.Services;
+using Software_Engineer.Service;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,59 +11,46 @@ namespace Software_Engineer.Controllers
     [ApiController]
     public class AchievementsController : ControllerBase
     {
-        private readonly DataContext _context;
-        
-       public AchievementsController(DataContext context)
+        private readonly IAchievementsService _AchievementsService;
+
+       public AchievementsController(IAchievementsService achievementsService)
         {
-            _context = context;
+            _AchievementsService = achievementsService;
         }
 
         // GET: api/<AchievementsController>
         [HttpGet]
         public IEnumerable<Achievements> Get()
         {
-            return _context.Achievements;
+            return _AchievementsService.Get();
         }
 
         // GET api/<AchievementsController>/5
         [HttpGet("{id}")]
         public ActionResult <Achievements> Get(int id)
         {
-            var ach = _context.Achievements.Find(a => a._idAchievement == id);
-            if (ach == null)
-                return NotFound();
-
-            return ach;
+       return _AchievementsService.GetById(id);
         } 
 
         // POST api/<AchievementsController>
         [HttpPost]
         public void Post([FromBody] Achievements achievement)
         {
-            _context.Achievements.Add(new Achievements { _idAchievement=_context.countA++,_nameAchievement=achievement._nameAchievement});
-            
+           _AchievementsService.Post(achievement);
         }
 
         // PUT api/<AchievementsController>/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] Achievements achievement)
+        public void Put(int id, [FromBody] Achievements achievement)
         {
-            var ach= _context.Achievements.Find(achievement=>achievement._idAchievement==id);
-            if (ach == null)
-                return NotFound();
-            ach._nameAchievement = achievement._nameAchievement;
-            return Ok();
+             _AchievementsService.Put(id, achievement);
         }
 
         // DELETE api/<AchievementsController>/5
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var ach= _context.Achievements.Find(a=>a._idAchievement==id);
-            if (ach == null)
-                return NotFound();
-            _context.Achievements.Remove(ach);
-            return Ok();
+           return _AchievementsService.Delete(id);
         }
     }
 }

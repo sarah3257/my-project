@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Software_Engineer.Entities;
+using Software_Engineer.Core.Entities;
+using Software_Engineer.Core.Services;
+using Software_Engineer.Service;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,10 +11,10 @@ namespace Software_Engineer.Controllers
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-        private readonly DataContext _Context;
-        public ProjectsController(DataContext context)
+        private readonly IProjectsService _projectsService;
+        public ProjectsController(IProjectsService projectsService)
         {
-            _Context = context;
+           _projectsService  = projectsService;
         }
 
 
@@ -20,36 +22,28 @@ namespace Software_Engineer.Controllers
         [HttpGet]
         public IEnumerable<Projects> Get()
         {
-            return _Context.Projects;
+           return _projectsService.Get();
         }
 
         // GET api/<ProjectsController>/5
         [HttpGet("{id}")]
         public ActionResult<Projects> Get(int id)
         {
-          var project= _Context.Projects.Find(project => project.IdProject == id);
-            if (project == null)
-                return NotFound();
-            return project;
+         return _projectsService.Get(id);
         }
 
         // POST api/<ProjectsController>
         [HttpPost]
         public void Post([FromBody] Projects project)
         {
-            _Context.Projects.Add(new Projects { IdProject =_Context.countP++, NameProject =project.NameProject, CreationDate=project.CreationDate});
+            _projectsService.Post(project);
         }
 
         // PUT api/<ProjectsController>/5
         [HttpPut("{id}")]
         public ActionResult Put(int id, [FromBody] Projects project)
         {
-            var project2= _Context.Projects.Find(project=>project.IdProject == id);
-            if (project2 == null)
-                return NotFound();
-            project2.NameProject=project.NameProject;
-            project2.CreationDate=project.CreationDate;
-            return Ok();
+            return  _projectsService.Put(id, project);  
         }
 
         // DELETE api/<ProjectsController>/5
@@ -57,11 +51,8 @@ namespace Software_Engineer.Controllers
         public ActionResult Delete(int id)
         {
 
-            var project2= _Context.Projects.Find(project=>project.IdProject == id);
-            if (project2 == null)
-                return NotFound();
-            _Context.Projects.Remove(project2);
-            return Ok();
+            return _projectsService.Delete(id);
+
 
         }
     }
